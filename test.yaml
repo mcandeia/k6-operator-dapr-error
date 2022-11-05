@@ -1,0 +1,16 @@
+apiVersion: k6.io/v1alpha1
+kind: K6
+metadata:
+  name: k6-sample
+spec:
+  parallelism: 1
+  script:
+    configMap:
+      name: tests
+      file: test.js
+  runner:
+    metadata:
+      annotations:
+        dapr.io/app-id: "tester-app"
+        dapr.io/enabled: "true"
+    image: localhost:5001/k6-custom:latest
