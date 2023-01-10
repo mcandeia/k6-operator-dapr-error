@@ -49,9 +49,7 @@ docker build -t "$IMAGE_NAME" -f "$IMAGE_NAME"/Dockerfile "$IMAGE_NAME"
 docker tag "$IMAGE_NAME" localhost:5001/"$IMAGE_NAME":latest
 docker push localhost:5001/"$IMAGE_NAME":latest
 
-rm -rf .k6-operator >/dev/null
-git clone https://github.com/grafana/k6-operator .k6-operator && cd .k6-operator
-make deploy && cd ..
+export IMG=ghcr.io/grafana/operator:controller-v0.0.8 && rm -rf /tmp/.k6-operator >/dev/null && git clone --depth 1 --branch v0.0.8 https://github.com/grafana/k6-operator /tmp/.k6-operator && cd /tmp/.k6-operator && make deploy && cd - && rm -rf /tmp/.k6-operator
 
 helm repo add dapr https://dapr.github.io/helm-charts/
 helm repo update
@@ -61,10 +59,7 @@ helm upgrade --install dapr dapr/dapr \
 --create-namespace \
 --wait
 
-kubectl delete configmap/tests --ignore-not-found=true
-kubectl create configmap tests --from-file test.js
-kubectl apply -f test.yaml
-
-
-MANAGER=$(kubectl get pods -n k6-operator-system| grep -Ei -o 'k6-operator-controller-manager-.*'| cut -d " " -f 1)
-kubectl logs $MANAGER -n k6-operator-system -c manager -f
+kubectl apply -f httpbin
+kubectl delete configmap/tests --ignore-not-found=true -n httpbin-ns
+kubectl create configmap tests --from-file test.js -n httpbin-ns
+kubectl apply -f test.yaml -n httpbin-ns
