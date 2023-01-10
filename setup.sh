@@ -51,13 +51,13 @@ docker push localhost:5001/"$IMAGE_NAME":latest
 
 export IMG=ghcr.io/grafana/operator:controller-v0.0.8 && rm -rf /tmp/.k6-operator >/dev/null && git clone --depth 1 --branch v0.0.8 https://github.com/grafana/k6-operator /tmp/.k6-operator && cd /tmp/.k6-operator && make deploy && cd - && rm -rf /tmp/.k6-operator
 
-helm repo add dapr https://dapr.github.io/helm-charts/
-helm repo update
-helm upgrade --install dapr dapr/dapr \
---version=1.9 \
---namespace dapr-system \
---create-namespace \
---wait
+# helm repo add dapr https://dapr.github.io/helm-charts/
+# helm repo update
+# helm upgrade --install dapr dapr/dapr \
+# --version=1.9 \
+# --namespace dapr-system \
+# --create-namespace \
+# --wait
 
 kubectl apply -f httpbin
 kubectl delete configmap/tests --ignore-not-found=true -n httpbin-ns

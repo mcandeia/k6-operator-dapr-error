@@ -1,7 +1,7 @@
 apiVersion: k6.io/v1alpha1
 kind: K6
 metadata:
-  name: k6-sample-3
+  name: k6-sample
   namespace: httpbin-ns
 spec:
   parallelism: 1
@@ -11,8 +11,8 @@ spec:
       file: test.js
   runner:
     serviceAccountName: k6-sa
-    metadata:
-      annotations:
-        dapr.io/app-id: "tester-app"
-        dapr.io/enabled: "true"
+    # metadata:
+    #   annotations:
+    #     dapr.io/app-id: "tester-app"
+    #     dapr.io/enabled: "true"
     image: localhost:5001/k6-custom:latest

@@ -2,26 +2,19 @@
 import { PodDisruptor } from 'k6/x/disruptor';
 import http from 'k6/http';
 
-export function setup() {
-  // pass service ip to scenarios
-  return {
-    srv_ip: "10.96.77.112:80",
-  }
+export default function () {
+  http.get(`http://httpbin.httpbin-ns.svc.cluster.local:80/delay/0.1`);
 }
-
-export default function (data) {
-  http.get(`http://${data.srv_ip}/delay/0.1`);
-}
-
-export function disrupt(_) {
-  const selector = {
-    namespace: "httpbin-ns",
-    select: {
-      labels: {
-        app: "httpbin"
-      }
+const selector = {
+  namespace: "httpbin-ns",
+  select: {
+    labels: {
+      app: "httpbin"
     }
   }
+}
+
+export function disrupt() {
   const podDisruptor = new PodDisruptor(selector)
 
   // delay traffic from one random replica of the deployment
